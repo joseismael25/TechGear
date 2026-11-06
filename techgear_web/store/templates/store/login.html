@@ -1,0 +1,19 @@
+{% extends "store/base.html" %}
+{% block title %}Iniciar sesión | TechGear{% endblock %}\n{% block meta_description %}Accede a tu cuenta TechGear para consultar tu panel y gestionar tus pedidos.{% endblock %}
+{% block content %}
+<section class="auth-wrap">
+  <div class="auth-card">
+    <p class="eyebrow">QUÉ BUENO TENERTE DE VUELTA</p>
+    <h1>Iniciar sesión</h1>
+    <p class="muted">Ingresa con tu cuenta de TechGear.</p>
+    {% if error %}<div class="alert alert-danger" role="alert">{{ error }}</div>{% endif %}
+    <form method="post" class="form-stack">
+      {% csrf_token %}
+      <div class="form-field"><label for="email">Correo electrónico</label><input id="email" name="email" type="email" autocomplete="email" value="{{ email|default:'' }}" required></div>
+      <div class="form-field"><label for="password">Contraseña</label><input id="password" name="password" type="password" autocomplete="current-password" required></div>
+      <button class="button button-primary button-full" type="submit">Ingresar</button>
+    </form>
+    <p class="auth-switch">¿No tienes cuenta? <a href="{% url 'register' %}">Regístrate aquí</a>.</p>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,72 @@
+{% extends "store/base.html" %}
+{% block title %}Mi panel | TechGear{% endblock %}\n{% block meta_description %}Consulta tu panel de TechGear, tus pedidos y la información del catálogo.{% endblock %}
+{% block content %}
+<section class="dashboard-layout" aria-label="Panel de usuario">
+  <aside class="dashboard-sidebar">
+    <p class="eyebrow">MI ESPACIO</p>
+    <h2>TechGear</h2>
+    <nav aria-label="Menú del panel">
+      <a class="sidebar-link active" href="{% url 'dashboard' %}">Resumen</a>
+      <a class="sidebar-link" href="{% url 'product_list' %}">Explorar catálogo</a>
+      {% if is_admin %}<a class="sidebar-link" href="#inventario">Gestionar inventario</a>{% endif %}
+    </nav>
+    <div class="sidebar-user"><span class="avatar">{{ request.session.user_nombre|default:"U"|slice:":1"|upper }}</span><div><strong>{{ request.session.user_nombre|default:"Usuario" }}</strong><small>{{ request.session.rol|default:"cliente"|title }}</small></div></div>
+  </aside>
+  <div class="dashboard-main">
+    <div class="section-heading dashboard-heading">
+      <div><p class="eyebrow">PANEL PRINCIPAL</p><h1>Hola, {{ request.session.user_nombre|default:"bienvenido" }} 👋</h1><p class="muted">Aquí tienes un resumen actualizado de TechGear.</p></div>
+      {% if is_admin %}<a class="button button-primary" href="{% url 'product_create' %}">+ Nuevo producto</a>{% else %}<a class="button button-primary" href="{% url 'product_list' %}">Ver catálogo</a>{% endif %}
+    </div>
+    {% if api_down %}<div class="alert alert-warning" role="status">No fue posible conectar con el servicio de productos. Los datos se actualizarán cuando la API esté disponible.</div>{% endif %}
+    <div class="stats-grid">
+      {% if is_admin %}
+        <article class="stat-card"><span>Productos en catálogo</span><strong>{{ stats.total }}</strong><small>Referencias registradas</small></article>
+        <article class="stat-card"><span>Unidades disponibles</span><strong>{{ stats.unidades }}</strong><small>Existencias totales</small></article>
+        <article class="stat-card"><span>Valor del inventario</span><strong>${{ stats.valor|floatformat:0 }}</strong><small>Precio por unidades en stock</small></article>
+        <article class="stat-card"><span>Stock bajo</span><strong>{{ stats.bajo_stock }}</strong><small>Productos con {{ low_stock }} unidades o menos</small></article>
+        <article class="stat-card"><span>Pedidos registrados</span><strong>{{ stats.ventas }}</strong><small>Pedidos guardados en la API</small></article>
+        <article class="stat-card"><span>Total de pedidos</span><strong>${{ stats.total_ventas|floatformat:0 }}</strong><small>Valor acumulado de los pedidos</small></article>
+        <article class="stat-card"><span>Usuarios registrados</span><strong>{{ stats.usuarios }}</strong><small>Cuentas creadas en TechGear</small></article>
+      {% else %}
+        <article class="stat-card"><span>Productos en catálogo</span><strong>{{ customer_stats.total }}</strong><small>Referencias disponibles para explorar</small></article>
+        <article class="stat-card"><span>Categorías</span><strong>{{ customer_stats.categorias }}</strong><small>Tipos de productos</small></article>
+        <article class="stat-card"><span>Productos disponibles</span><strong>{{ customer_stats.disponibles }}</strong><small>Con existencias mayores a cero</small></article>
+        <article class="stat-card"><span>Mis pedidos</span><strong>{{ customer_stats.pedidos }}</strong><small>Pedidos asociados a tu cuenta</small></article>
+        <article class="stat-card"><span>Total de mis pedidos</span><strong>${{ customer_stats.total_pedidos|floatformat:0 }}</strong><small>Valor registrado</small></article>
+      {% endif %}
+    </div>
+    <div class="dashboard-panels">
+      {% if is_admin %}<section class="panel-card" aria-labelledby="stock-title">
+        <div class="panel-heading"><div><p class="eyebrow">INVENTARIO</p><h2 id="stock-title">Estado del stock</h2></div><span class="panel-icon" aria-hidden="true">▥</span></div>
+        <div class="stock-summary"><div><strong>{{ stats.unidades }}</strong><span>unidades totales</span></div><div><strong>{{ stats.bajo_stock }}</strong><span>referencias por revisar</span></div></div>
+        <div class="stock-track" role="img" aria-label="{{ stats.bajo_stock }} productos con stock bajo de {{ stats.total }} productos"><span style="width: {{ low_stock_percent }}%"></span></div>
+        <p class="muted chart-note">{{ stats.bajo_stock }} de {{ stats.total }} productos tienen existencias iguales o inferiores a {{ low_stock }} unidades.</p>
+      </section>{% endif %}
+      <section class="panel-card" aria-labelledby="recent-title">
+        <div class="panel-heading"><div><p class="eyebrow">ACTIVIDAD</p><h2 id="recent-title">Productos recientes</h2></div><a href="{% url 'product_list' %}">Ver catálogo</a></div>
+        <ul class="recent-list">
+          {% for product in recent_products %}
+            <li>{% if product.image_url %}<img class="recent-product-image" src="{{ product.image_url }}" alt="" width="38" height="38" loading="lazy" decoding="async">{% else %}<span class="recent-mark" aria-hidden="true">TG</span>{% endif %}<div><strong>{{ product.nombre }}</strong><small>{{ product.categoria }}</small></div><b>${{ product.precio|floatformat:0 }}</b></li>
+          {% empty %}<li class="muted">Todavía no hay productos para mostrar.</li>{% endfor %}
+        </ul>
+      </section>
+    </div>
+    {% if is_admin %}
+    <section class="section" aria-labelledby="orders-title">
+      <div class="section-heading"><div><p class="eyebrow">MOVIMIENTOS</p><h2 id="orders-title">Últimos pedidos</h2><p class="muted">Registros existentes en la API.</p></div></div>
+      <div class="table-wrap"><table><thead><tr><th>Pedido</th><th>Usuario</th><th>Fecha</th><th>Total</th></tr></thead><tbody>
+        {% for order in recent_orders %}<tr><td><strong>#{{ order.id|default:"—"|slice:":8" }}</strong></td><td>{{ order.usuario_id|default:"—"|truncatechars:18 }}</td><td>{{ order.fecha|default:"—"|slice:":10" }}</td><td>${{ order.total|floatformat:0 }}</td></tr>
+        {% empty %}<tr><td colspan="4" class="empty-cell">Todavía no hay pedidos registrados.</td></tr>{% endfor %}
+      </tbody></table></div>
+    </section>
+    <section class="section" id="inventario" aria-labelledby="inventory-title">
+      <div class="section-heading"><div><p class="eyebrow">ADMINISTRACIÓN</p><h2 id="inventory-title">Gestión de inventario</h2><p class="muted">Crea, actualiza o elimina productos del catálogo.</p></div></div>
+      <div class="table-wrap"><table><thead><tr><th>Producto</th><th>Categoría</th><th>Precio</th><th>Stock</th><th>Acciones</th></tr></thead><tbody>
+      {% for product in products %}<tr><td><div class="inventory-product">{% if product.image_url %}<img src="{{ product.image_url }}" alt="" width="52" height="48" loading="lazy">{% endif %}<div><strong>{{ product.nombre }}</strong><small>{{ product.descripcion|truncatechars:70 }}</small></div></div></td><td>{{ product.categoria }}</td><td>${{ product.precio|floatformat:0 }}</td><td>{% if product.stock <= low_stock %}<span class="stock stock-low">{{ product.stock }} unidades</span>{% else %}<span class="stock stock-ok">{{ product.stock }} unidades</span>{% endif %}</td><td class="table-actions"><a href="{% url 'product_update' product.id %}">Editar</a><form method="post" action="{% url 'product_delete' product.id %}" onsubmit="return confirm('¿Seguro que deseas eliminar este producto?');">{% csrf_token %}<button class="link-danger" type="submit">Eliminar</button></form></td></tr>
+      {% empty %}<tr><td colspan="5" class="empty-cell">Todavía no hay productos registrados.</td></tr>{% endfor %}
+      </tbody></table></div>
+    </section>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}
