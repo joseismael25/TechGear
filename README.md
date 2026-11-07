@@ -1,151 +1,341 @@
-# TechGear — API FastAPI + portal Django
+💻 TechGear – Sistema de Gestión de Productos Tecnológicos
 
-> **Corrección incluida:** se corrigió el error que provocaba HTTP 500 al abrir `/dashboard/`. La función auxiliar `_fetch_private_list()` ya no tiene el decorador de vistas `@session_required`; además, el panel tolera campos numéricos incompletos sin detenerse.
+TechGear es una aplicación web orientada a la gestión y comercialización de productos tecnológicos. El proyecto integra una API REST desarrollada con FastAPI, una interfaz web desarrollada con Django y una base de datos MongoDB Atlas.
 
-Proyecto híbrido de catálogo e inventario. FastAPI expone la API y guarda usuarios, productos y pedidos en MongoDB Atlas. Django sirve las páginas HTML, gestiona la sesión del navegador y consume esa API. SQLite se utiliza únicamente para las tablas internas de Django (sesiones y administración); no reemplaza MongoDB.
+El sistema permite consultar productos, administrar inventario, gestionar usuarios, agregar productos al carrito y registrar pedidos.
 
-## Requisitos
+---
 
-- Python 3.12 o superior (el proyecto está preparado para Django 6.1 y Python 3.14).
-- MongoDB Atlas y una URI de conexión válida.
-- Dos terminales: una para FastAPI y otra para Django.
+🌐 Enlaces del proyecto
 
-## 1. Configurar la API
+Servicio| Plataforma| Enlace
+API REST – FastAPI| Render| https://techgear-yxm3.onrender.com
+Documentación API| Render / Swagger| https://techgear-yxm3.onrender.com/docs
+Productos API| Render| https://techgear-yxm3.onrender.com/products
+Página web – Django| Vercel| https://tech-gear-kappa.vercel.app/
+Base de datos| MongoDB Atlas| https://cloud.mongodb.com/
 
-Si ya tienes los archivos `.env` creados, consérvalos: no los reemplaces al copiar esta versión. Comprueba principalmente que `MONGO_URI` apunte a tu base de datos Atlas y que `ADMIN_EMAILS` contenga el correo con el que te vas a registrar.
+---
 
-En Windows PowerShell:
+🛠️ Tecnologías utilizadas
 
-```powershell
+Backend – API
+
+- Python
+- FastAPI
+- Uvicorn
+- Pydantic
+- Motor
+- PyMongo
+- JWT para autenticación
+- Pillow para procesamiento de imágenes
+
+Frontend – Aplicación web
+
+- Django
+- HTML5
+- CSS3
+- JavaScript
+- Requests
+
+Base de datos
+
+- MongoDB Atlas: almacenamiento de productos, usuarios, pedidos e imágenes.
+- SQLite: almacenamiento local de las tablas internas de Django, como sesiones y administración.
+
+Servicios de despliegue
+
+- Render: alojamiento de la API FastAPI.
+- Vercel: alojamiento de la aplicación web Django.
+- GitHub: control de versiones y almacenamiento del código fuente.
+
+---
+
+⚙️ Arquitectura del proyecto
+
+El proyecto está dividido en tres componentes principales:
+
+1. FastAPI: procesa las solicitudes, administra los productos, usuarios y pedidos.
+2. Django: proporciona la interfaz gráfica y consume los servicios de la API.
+3. MongoDB Atlas: almacena la información principal del sistema.
+
+Flujo de comunicación
+
+             USUARIO
+                |
+                v
+       DJANGO - VERCEL
+                |
+                | Solicitudes HTTP
+                v
+       FASTAPI - RENDER
+                |
+                | Consultas y operaciones
+                v
+          MONGODB ATLAS
+
+Django consume la API utilizando la variable de entorno "API_URL".
+
+---
+
+📁 Estructura del proyecto
+
+TechGear_E_F/
+│
+├── README.md
+├── .gitignore
+├── manage.py
+│
+├── techgear_api/
+│   ├── main.py
+│   ├── requirements.txt
+│   ├── .env
+│   │
+│   ├── db/
+│   │   └── database.py
+│   │
+│   └── models/
+│       └── schemas.py
+│
+└── techgear_web/
+    ├── manage.py
+    ├── requirements.txt
+    ├── .env
+    ├── db.sqlite3
+    │
+    ├── techgear_web/
+    │   ├── settings.py
+    │   ├── urls.py
+    │   ├── asgi.py
+    │   └── wsgi.py
+    │
+    └── store/
+        ├── views.py
+        ├── urls.py
+        ├── models.py
+        ├── admin.py
+        ├── templates/
+        └── static/
+
+---
+
+🚀 Instalación y ejecución local
+
+Requisitos
+
+- Python 3.12 o superior.
+- Visual Studio Code.
+- MongoDB Atlas.
+- Git.
+- Conexión a Internet.
+
+1. Descargar el proyecto
+
+Clonar el repositorio:
+
+git clone https://github.com/joseismael25/TechGear.git
+
+Entrar a la carpeta:
+
+cd TechGear
+
+2. Configurar FastAPI
+
+Desde la carpeta principal:
+
 cd techgear_api
+
+Crear entorno virtual:
+
 py -m venv venv
+
+Activar el entorno virtual en Windows:
+
 .\venv\Scripts\Activate.ps1
-Copy-Item .env.example .env
-py -m pip install --upgrade pip
+
+Instalar dependencias:
+
 py -m pip install -r requirements.txt
-```
 
-Abre `techgear_api/.env` y configura:
+Crear o configurar el archivo ".env" dentro de "techgear_api":
 
-- `MONGO_URI`: URI de MongoDB Atlas; agrega tu IP en Network Access de Atlas y revisa las credenciales.
-- `SECRET_KEY`: clave aleatoria privada de al menos 32 caracteres.
-- `ADMIN_EMAILS`: correo que tendrá permisos de administrador. Regístrate en el portal con ese mismo correo.
+MONGO_URI=TU_URI_DE_MONGODB_ATLAS
+SECRET_KEY=TU_CLAVE_SECRETA
+ADMIN_EMAILS=tu_correo@ejemplo.com
+PUBLIC_API_URL=http://127.0.0.1:8000
 
-Inicia la API:
+Iniciar FastAPI:
 
-```powershell
 py -m uvicorn main:app --reload --host 127.0.0.1 --port 8000
-```
 
-Documentación interactiva: http://127.0.0.1:8000/docs
+Documentación local:
 
-## 2. Configurar Django
+http://127.0.0.1:8000/docs
 
-Abre otra terminal PowerShell en la carpeta principal del proyecto (la que contiene `manage.py`):
+3. Configurar Django
 
-```powershell
+Abrir una segunda terminal y regresar a la carpeta principal del proyecto.
+
+Crear entorno virtual:
+
 py -m venv venv
+
+Activar el entorno:
+
 .\venv\Scripts\Activate.ps1
-Copy-Item .\techgear_web\.env.example .\techgear_web\.env
-py -m pip install --upgrade pip
-py -m pip install -r .\techgear_web\requirements.txt
-```
 
-Abre `techgear_web/.env` y confirma que `API_URL=http://127.0.0.1:8000`. Cambia `DJANGO_SECRET_KEY` por una clave privada propia. Para desarrollo local deja `DJANGO_DEBUG=True`.
+Instalar dependencias:
 
-Ejecuta las migraciones y el servidor desde esa misma carpeta principal:
+py -m pip install -r techgear_web/requirements.txt
 
-```powershell
-py manage.py check
-py manage.py findstatic store/css/styles.css --verbosity 2
+Crear o configurar el archivo ".env" dentro de "techgear_web":
+
+API_URL=http://127.0.0.1:8000
+DJANGO_SECRET_KEY=TU_CLAVE_SECRETA
+DJANGO_DEBUG=True
+DJANGO_ALLOWED_HOSTS=127.0.0.1,localhost
+
+Ejecutar las migraciones:
+
 py manage.py migrate
+
+Iniciar Django:
+
 py manage.py runserver 127.0.0.1:8001
-```
 
-Abre http://127.0.0.1:8001
+Abrir en el navegador:
 
-## 3. Crear cuenta administradora
+http://127.0.0.1:8001
 
-1. Agrega tu correo en `ADMIN_EMAILS` dentro de `techgear_api/.env`.
-2. Reinicia FastAPI si ya estaba ejecutándose.
-3. En el portal Django selecciona **Registrarse** y crea una cuenta con ese correo.
-4. Si esa cuenta ya existía antes de agregar el correo a `ADMIN_EMAILS`, cierra sesión e inicia sesión de nuevo: la API actualiza su rol a `admin` al autenticarla.
-5. Inicia sesión. La API asigna el rol `admin` desde el servidor; no se puede elegir desde el formulario.
+Importante: FastAPI debe permanecer ejecutándose en la primera terminal mientras se utiliza Django.
 
-Los demás correos se registran como clientes. Ambos roles pueden entrar a **Mi panel**; solo el administrador puede crear, editar o eliminar productos.
+---
 
-## 4. Estructura
+☁️ Configuración del despliegue
 
-- `techgear_api/`: API FastAPI, esquemas Pydantic, autenticación JWT y acceso MongoDB.
-- `techgear_web/`: proyecto Django, aplicación `store`, templates y archivos estáticos. También se incluye un `manage.py` en la carpeta principal para ejecutar los comandos sin entrar a esta subcarpeta.
-- `techgear_web/db.sqlite3`: se genera localmente al ejecutar `py manage.py migrate`; no es la base de productos, que está en MongoDB Atlas.
+FastAPI – Render
 
-## Notas importantes
+Dirección pública:
 
-- Ejecuta los dos servidores al mismo tiempo. Si Django indica que no puede conectar con la API, comprueba que FastAPI esté activo y que `API_URL` sea correcto.
-- No subas los archivos `.env` a Git ni compartas sus claves.
-- El dashboard presenta métricas reales derivadas de los productos y pedidos de la API.
-- El catálogo incluye carrito persistente en `localStorage`. Para finalizar una compra el cliente debe iniciar sesión; Django envía el pedido a FastAPI y la API verifica el precio vigente y descuenta el stock antes de registrar el pedido. Es un flujo de demostración: no integra una pasarela bancaria ni procesa pagos reales.
-- El modelo actual no contiene campos de calificación, reseñas ni precio anterior; por eso el catálogo muestra “Sin reseñas” y no inventa descuentos. Esos elementos solo pueden mostrarse como datos reales cuando se incorporen a los productos.
-- Para producción configura HTTPS, `DJANGO_DEBUG=False`, hosts permitidos, cookies seguras, secretos reales y un servidor ASGI/WSGI de producción. `runserver` es solo para desarrollo.
-- Lighthouse depende también del navegador, red, servidor y contenido cargado. Se aplicaron mejoras de accesibilidad, semántica, metadatos y carga ligera, pero no se puede prometer una puntuación fija de 100 sin medir el despliegue real.
+https://techgear-yxm3.onrender.com
 
-## 5. Imágenes de productos (archivo o enlace)
+En Render, dentro de Environment Variables, se configuran las siguientes variables:
 
-Desde el portal inicia sesión con una cuenta administradora y abre **Mi panel → Nuevo producto** o edita un producto existente. En el formulario puedes:
+Variable| Descripción
+"MONGO_URI"| Conexión a MongoDB Atlas
+"SECRET_KEY"| Clave privada para autenticación
+"ADMIN_EMAILS"| Correos autorizados como administradores
+"PUBLIC_API_URL"| URL pública de FastAPI para las imágenes
 
-- Seleccionar una imagen JPG, PNG o WebP desde tu computador (máximo 5 MB). Django la envía a FastAPI y FastAPI la guarda en la colección `product_images` de MongoDB.
-- O pegar una URL pública que empiece por `https://` o `http://`.
-- Ver una vista previa antes de guardar y reemplazar o quitar la imagen al editar.
+"PUBLIC_API_URL" debe contener:
 
-Las imágenes cargadas desde el computador se sirven mediante `GET /images/{id}`. Configura `PUBLIC_API_URL` en `techgear_api/.env` con la dirección donde los navegadores podrán acceder a FastAPI. Para desarrollo local usa `PUBLIC_API_URL=http://127.0.0.1:8000`. En producción debe ser la URL HTTPS pública de la API.
+https://techgear-yxm3.onrender.com
 
-Instala las nuevas dependencias de FastAPI ejecutando nuevamente `py -m pip install -r requirements.txt` dentro de su entorno virtual.
+Django – Vercel
 
+Dirección pública:
 
-## Corrección adicional de archivos CSS
+https://tech-gear-kappa.vercel.app/
 
-Los archivos estáticos están disponibles en dos ubicaciones para que Django pueda encontrarlos:
-- `techgear_web/static/store/` (carpeta estática general del proyecto).
-- `techgear_web/store/static/store/` (carpeta estática propia de la aplicación).
+En las variables de entorno de Vercel se configura:
 
-En desarrollo (`DJANGO_DEBUG=True`), las rutas `/static/` también se sirven explícitamente desde `techgear_web/static/`.
-Ejecuta los comandos desde la carpeta principal que contiene este `README.md` y el `manage.py`:
-```powershell
-py manage.py findstatic store/css/styles.css --verbosity 2
-py manage.py runserver 127.0.0.1:8001
-```
+Variable| Descripción
+"API_URL"| Dirección pública de FastAPI
+"DJANGO_SECRET_KEY"| Clave privada de Django
+"DJANGO_ALLOWED_HOSTS"| Dominios autorizados
+"DJANGO_DEBUG"| Modo de depuración
 
+La variable "API_URL" debe contener:
 
-## 6. Catálogo, carrito y pedidos
+https://techgear-yxm3.onrender.com
 
-- El botón **Agregar al carrito** valida la cantidad frente al stock conocido y actualiza el contador de la burbuja flotante fija.
-- El carrito se conserva en el navegador mediante `localStorage`; permite cambiar cantidades, recalcular subtotales y total, eliminar productos y vaciarlo; los campos de precio heredados se normalizan al leer el almacenamiento.
-- Para finalizar el pedido debes iniciar sesión. Django envía los artículos a `POST /checkout/` y FastAPI crea el pedido en `POST /orders`.
-- FastAPI vuelve a consultar el precio en MongoDB y descuenta el inventario con una actualización condicionada al stock disponible. El precio que llegue desde el navegador no se usa para calcular el total.
-- El flujo registra pedidos y actualiza existencias, pero **no cobra dinero**: no hay pasarela de pagos conectada.
-- El catálogo actual no tiene columnas de reseñas/calificación ni precio anterior. La interfaz lo indica como “Sin reseñas” y no muestra descuentos inventados.
+Para producción se recomienda:
 
-## Ajustes de carrito e informe de compra
+DJANGO_DEBUG=False
 
-La versión corregida conserva `techgear_cart_v1` en `localStorage` y normaliza los campos de precio (`price`, `precio`, `valor` y `precio_unitario`) al leer datos antiguos. Los importes se muestran y calculan en COP usando el precio validado por FastAPI al crear el pedido. El carrito ahora se abre desde una burbuja fija en la esquina inferior derecha; el catálogo mantiene tarjetas con texto de alto contraste. Al completar el pedido se presenta un informe imprimible con los datos devueltos por la API. El historial de pedidos continúa guardándose en la colección `orders` de MongoDB y aparece en el panel según el rol del usuario. No se conecta ninguna pasarela ni se realiza un cobro real.
+Nota: Las variables privadas se configuran directamente en los paneles de Render y Vercel. Los archivos ".env" no deben subirse a GitHub.
 
-### Arranque local (Windows PowerShell)
+---
 
-1. **Primero inicia FastAPI**, desde `techgear_api` y con su entorno virtual activo:
-   ```powershell
-   py -m uvicorn main:app --reload --host 127.0.0.1 --port 8000
-   ```
-2. **Después inicia Django**, desde la carpeta raíz del proyecto y en otra terminal con el entorno virtual de Django activo:
-   ```powershell
-   py manage.py migrate
-   py manage.py runserver 127.0.0.1:8001
-   ```
-3. Abre `http://127.0.0.1:8001`. La API debe permanecer ejecutándose en la primera terminal.
+🛍️ Funcionalidades principales
 
-> Para verificar Django localmente instala primero las dependencias de `techgear_web/requirements.txt` en el entorno virtual de Django. La comprobación automática `manage.py check` no pudo ejecutarse en este entorno de edición porque Django no está instalado aquí.
+Catálogo de productos
 
+- Visualización de productos tecnológicos.
+- Consulta de información y precios.
+- Consulta de disponibilidad y existencias.
+- Visualización de imágenes.
 
-## Actualización visual del inventario después de comprar
+Gestión de usuarios
 
-FastAPI descuenta las unidades de `products.stock` en MongoDB al registrar el pedido. Después de cerrar el informe de compra, el navegador limpia el carrito y recarga el catálogo; así Django vuelve a consultar `GET /products` y muestra las existencias actualizadas. El panel también consulta nuevamente los productos al abrirlo.
+- Registro de usuarios.
+- Inicio y cierre de sesión.
+- Autenticación mediante JWT.
+- Roles de administrador y cliente.
+
+Administración
+
+- Crear productos.
+- Editar productos.
+- Eliminar productos.
+- Consultar inventario.
+- Consultar estadísticas y pedidos.
+
+Carrito de compras
+
+- Agregar productos al carrito.
+- Modificar cantidades.
+- Eliminar productos.
+- Calcular subtotales y total.
+- Persistencia mediante "localStorage".
+
+Pedidos
+
+- Registro de pedidos.
+- Validación de precios desde la API.
+- Descuento de existencias.
+- Historial de pedidos.
+- Informe imprimible de compra.
+
+Importante: El sistema registra pedidos y actualiza inventario, pero no tiene integrada una pasarela de pagos ni realiza cobros reales.
+
+Imágenes
+
+- Carga de imágenes JPG, PNG y WebP.
+- Tamaño máximo de 5 MB.
+- Almacenamiento de imágenes en MongoDB.
+- Posibilidad de utilizar enlaces públicos de imágenes.
+
+---
+
+🔐 Seguridad
+
+- Las contraseñas de los usuarios se almacenan mediante hash.
+- Se utiliza autenticación JWT.
+- Los permisos administrativos son controlados desde la API.
+- Las claves privadas se gestionan mediante variables de entorno.
+- Los archivos ".env" están excluidos del repositorio mediante ".gitignore".
+
+Nunca publiques contraseñas, tokens, URI de MongoDB ni claves privadas.
+
+---
+
+---
+
+👨‍💻 Autor
+
+Proyecto: TechGear
+
+Tecnologías principales: Python, FastAPI, Django, JavaScript y MongoDB Atlas.
+
+Repositorio: https://github.com/joseismael25/TechGear
+
+Despliegue: Render y Vercel.
+
+---
+
+📌 Observaciones finales
+
+TechGear es un proyecto de gestión de productos tecnológicos que integra servicios independientes mediante una API REST.
+
+Su arquitectura permite separar la lógica del backend, la interfaz web y el almacenamiento de datos, facilitando el mantenimiento y la evolución del sistema.
