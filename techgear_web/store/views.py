@@ -119,34 +119,99 @@ def product_list(request):
 def login_view(request):
     if request.session.get("access_token"):
         return redirect("dashboard")
+
     if request.method == "POST":
         email = request.POST.get("email", "").strip()
         password = request.POST.get("password", "")
+
         try:
-            resp = requests.post(_url("/auth/login"), json={"email": email, "password": password}, timeout=TIMEOUT)
+            resp = requests.post(
+                _url("/auth/login"),
+                json={
+                    "email": email,
+                    "password": password
+                },
+                timeout=TIMEOUT
+            )
+
             if resp.status_code == 200:
                 token = resp.json().get("access_token")
+
                 if not token:
-                    return render(request, "store/login.html", {"error": "La API no devolvió un token válido", "email": email})
-                # Consultamos el perfil para conocer nombre y rol
-                me = requests.get(_url("/users/me"), headers={"Authorization": f"Bearer {token}"}, timeout=TIMEOUT)
+                    return render(
+                        request,
+                        "store/login.html",
+                        {
+                            "error": "La API no devolvió un token válido",
+                            "email": email
+                        }
+                    )
+
+                # Consultar el perfil del usuario.
+                me = requests.get(
+                    _url("/users/me"),
+                    headers={
+                        "Authorization": f"Bearer {token}"
+                    },
+                    timeout=TIMEOUT
+                )
+
                 try:
                     perfil = me.json() if me.status_code == 200 else {}
                 except ValueError:
                     perfil = {}
-                request.session.cycle_key()  # Evita reutilizar el identificador de sesión previo al login.
+
+                # Guardar los datos de sesión.
+                # No se utiliza cycle_key porque ahora usamos
+                # sesiones mediante cookies firmadas.
                 request.session["access_token"] = token
                 request.session["user_email"] = email
                 request.session["user_id"] = perfil.get("id", "")
-                request.session["user_nombre"] = perfil.get("nombre", email)
-                request.session["rol"] = perfil.get("rol", "cliente")
-                messages.success(request, f"¡Bienvenido, {request.session['user_nombre']}!")
+                request.session["user_nombre"] = perfil.get(
+                    "nombre",
+                    email
+                )
+                request.session["rol"] = perfil.get(
+                    "rol",
+                    "cliente"
+                )
+
+                messages.success(
+                    request,
+                    f"¡Bienvenido, {request.session['user_nombre']}!"
+                )
+
                 return redirect("dashboard")
+
             if resp.status_code == 401:
-                return render(request, "store/login.html", {"error": "Correo o contraseña incorrectos", "email": email})
-            return render(request, "store/login.html", {"error": "La API respondió con un error inesperado", "email": email})
+                return render(
+                    request,
+                    "store/login.html",
+                    {
+                        "error": "Correo o contraseña incorrectos",
+                        "email": email
+                    }
+                )
+
+            return render(
+                request,
+                "store/login.html",
+                {
+                    "error": "La API respondió con un error inesperado",
+                    "email": email
+                }
+            )
+
         except requests.exceptions.RequestException:
-            return render(request, "store/login.html", {"error": "No se pudo conectar con la API", "email": email})
+            return render(
+                request,
+                "store/login.html",
+                {
+                    "error": "No se pudo conectar con la API",
+                    "email": email
+                }
+            )
+
     return render(request, "store/login.html")
 
 
