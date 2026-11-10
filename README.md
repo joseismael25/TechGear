@@ -1,95 +1,126 @@
-💻 TechGear – Sistema de Gestión de Productos Tecnológicos
+<div align="center">TECHGEAR
 
-TechGear es una aplicación web orientada a la gestión y comercialización de productos tecnológicos. El proyecto integra una API REST desarrollada con FastAPI, una interfaz web desarrollada con Django y una base de datos MongoDB Atlas.
+Plataforma web de gestión y comercialización de productos tecnológicos
 
-El sistema permite consultar productos, administrar inventario, gestionar usuarios, agregar productos al carrito y registrar pedidos.
+Una solución que integra una aplicación web, una API REST y una base de datos en la nube.
 
----
+"Aplicación web" (https://tech-gear-kappa.vercel.app/) · "API REST" (https://techgear-yxm3.onrender.com) · "Documentación API" (https://techgear-yxm3.onrender.com/docs)
 
-🌐 Enlaces del proyecto
+"Python" (https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+"Django" (https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=django&logoColor=white)
+"FastAPI" (https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)
+"MongoDB" (https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
+"JavaScript" (https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
 
-Servicio| Plataforma| Enlace
-API REST – FastAPI| Render| https://techgear-yxm3.onrender.com
-Documentación API| Render / Swagger| https://techgear-yxm3.onrender.com/docs
-Productos API| Render| https://techgear-yxm3.onrender.com/products
-Página web – Django| Vercel| https://tech-gear-kappa.vercel.app/
-Base de datos| MongoDB Atlas| https://cloud.mongodb.com/
+</div>---
 
----
+1. ¿Qué es TechGear?
 
-🛠️ Tecnologías utilizadas
+TechGear es una plataforma web diseñada para facilitar la consulta y administración de productos tecnológicos.
 
-Backend – API
+El proyecto permite visualizar un catálogo de productos, gestionar usuarios, administrar el inventario y registrar pedidos desde una aplicación web.
 
-- Python
-- FastAPI
-- Uvicorn
-- Pydantic
-- Motor
-- PyMongo
-- JWT para autenticación
-- Pillow para procesamiento de imágenes
+Su desarrollo utiliza una arquitectura dividida en dos partes principales:
 
-Frontend – Aplicación web
+- Django: se encarga de la interfaz web y de la interacción con el usuario.
+- FastAPI: procesa las solicitudes, administra las operaciones y se comunica con MongoDB Atlas.
 
-- Django
-- HTML5
-- CSS3
-- JavaScript
-- Requests
+De esta manera, ambos componentes trabajan juntos para ofrecer una aplicación organizada y funcional.
 
-Base de datos
+2. ¿Cómo funciona el sistema?
 
-- MongoDB Atlas: almacenamiento de productos, usuarios, pedidos e imágenes.
-- SQLite: almacenamiento local de las tablas internas de Django, como sesiones y administración.
+TechGear utiliza tres componentes principales:
 
-Servicios de despliegue
+Componente| Función
+Django| Muestra la página web y gestiona la navegación del usuario.
+FastAPI| Procesa las solicitudes y ejecuta las operaciones del sistema.
+MongoDB Atlas| Almacena la información principal de usuarios, productos y pedidos.
 
-- Render: alojamiento de la API FastAPI.
-- Vercel: alojamiento de la aplicación web Django.
-- GitHub: control de versiones y almacenamiento del código fuente.
-
----
-
-⚙️ Arquitectura del proyecto
-
-El proyecto está dividido en tres componentes principales:
-
-1. FastAPI: procesa las solicitudes, administra los productos, usuarios y pedidos.
-2. Django: proporciona la interfaz gráfica y consume los servicios de la API.
-3. MongoDB Atlas: almacena la información principal del sistema.
-
-Flujo de comunicación
+Arquitectura del proyecto
 
              USUARIO
                 |
                 v
-       DJANGO - VERCEL
+        APLICACIÓN WEB
+             DJANGO
+             VERCEL
                 |
                 | Solicitudes HTTP
                 v
-       FASTAPI - RENDER
+            API REST
+             FASTAPI
+             RENDER
                 |
-                | Consultas y operaciones
+                | Consulta y almacenamiento
                 v
           MONGODB ATLAS
 
-Django consume la API utilizando la variable de entorno "API_URL".
+En pocas palabras: el usuario interactúa con Django, Django se comunica con FastAPI y FastAPI consulta o actualiza la información en MongoDB Atlas.
 
----
+3. Funcionalidades principales
 
-📁 Estructura del proyecto
+🛍️ Productos
 
-TechGear_E_F/
-│
-├── README.md
-├── .gitignore
-├── manage.py
+- Visualización del catálogo de productos.
+- Consulta de información y detalles.
+- Registro de nuevos productos.
+- Actualización de información.
+- Eliminación de productos.
+
+👤 Usuarios
+
+- Registro de usuarios.
+- Inicio de sesión.
+- Consulta del perfil.
+- Autenticación mediante tokens JWT.
+- Diferenciación de roles de usuario.
+
+📦 Pedidos
+
+- Registro de pedidos.
+- Consulta de pedidos.
+- Gestión de información relacionada con las compras.
+
+🖼️ Imágenes
+
+- Carga de imágenes de productos.
+- Consulta de imágenes mediante la API.
+
+🔐 Seguridad
+
+- Autenticación mediante JWT.
+- Protección de operaciones que requieren autorización.
+- Configuración de variables de entorno.
+- Control de acceso según los permisos establecidos.
+
+4. Tecnologías utilizadas
+
+Las siguientes herramientas se utilizaron durante el desarrollo:
+
+Tecnología| Uso dentro del proyecto
+Python| Lenguaje principal del backend.
+Django| Desarrollo de la aplicación web.
+FastAPI| Creación de la API REST.
+MongoDB Atlas| Base de datos NoSQL en la nube.
+Motor / PyMongo| Conexión y operaciones con MongoDB.
+HTML5| Estructura de las páginas.
+CSS3| Diseño y estilos visuales.
+JavaScript| Interactividad de la interfaz.
+JWT| Autenticación y autorización.
+Pillow| Procesamiento de imágenes.
+Git y GitHub| Control de versiones y almacenamiento del código.
+Render| Despliegue de la API.
+Vercel| Despliegue de la aplicación web.
+
+5. Estructura del proyecto
+
+El proyecto está dividido en dos módulos principales:
+
+TechGear/
 │
 ├── techgear_api/
 │   ├── main.py
 │   ├── requirements.txt
-│   ├── .env
 │   │
 │   ├── db/
 │   │   └── database.py
@@ -97,245 +128,222 @@ TechGear_E_F/
 │   └── models/
 │       └── schemas.py
 │
-└── techgear_web/
-    ├── manage.py
-    ├── requirements.txt
-    ├── .env
-    ├── db.sqlite3
-    │
-    ├── techgear_web/
-    │   ├── settings.py
-    │   ├── urls.py
-    │   ├── asgi.py
-    │   └── wsgi.py
-    │
-    └── store/
-        ├── views.py
-        ├── urls.py
-        ├── models.py
-        ├── admin.py
-        ├── templates/
-        └── static/
+├── techgear_web/
+│   ├── manage.py
+│   ├── requirements.txt
+│   │
+│   ├── techgear_web/
+│   │   ├── settings.py
+│   │   ├── urls.py
+│   │   ├── asgi.py
+│   │   └── wsgi.py
+│   │
+│   └── store/
+│       ├── views.py
+│       ├── urls.py
+│       ├── models.py
+│       ├── admin.py
+│       ├── templates/
+│       └── static/
+│
+├── .gitignore
+└── README.md
 
----
+¿Qué contiene cada módulo?
 
-🚀 Instalación y ejecución local
+"techgear_api/"
 
-Requisitos
+Contiene el backend del proyecto.
 
-- Python 3.12 o superior.
-- Visual Studio Code.
-- MongoDB Atlas.
-- Git.
-- Conexión a Internet.
+- "main.py": define la API y sus endpoints.
+- "db/database.py": configura la conexión con MongoDB Atlas.
+- "models/schemas.py": contiene los esquemas para validar la información.
+- "requirements.txt": contiene las dependencias de FastAPI.
 
-1. Descargar el proyecto
+"techgear_web/"
 
-Clonar el repositorio:
+Contiene la aplicación desarrollada con Django.
+
+- "settings.py": configuración general del proyecto.
+- "urls.py": rutas principales.
+- "views.py": lógica de las vistas.
+- "templates/": archivos HTML.
+- "static/": archivos CSS, JavaScript e imágenes.
+- "requirements.txt": dependencias de Django.
+
+6. Instalación y ejecución
+
+Para ejecutar TechGear localmente necesitas tener instalado Python y Git.
+
+Paso 1. Descargar el proyecto
+
+Clona el repositorio:
 
 git clone https://github.com/joseismael25/TechGear.git
 
-Entrar a la carpeta:
+Entra en la carpeta del proyecto:
 
 cd TechGear
 
-2. Configurar FastAPI
+Paso 2. Ejecutar FastAPI
 
-Desde la carpeta principal:
+Abre una terminal y entra en la carpeta de la API:
 
 cd techgear_api
 
-Crear entorno virtual:
+Crea un entorno virtual:
 
-py -m venv venv
+python -m venv venv
 
-Activar el entorno virtual en Windows:
+Actívalo en Windows:
 
 .\venv\Scripts\Activate.ps1
 
-Instalar dependencias:
+Instala las dependencias:
 
-py -m pip install -r requirements.txt
+pip install -r requirements.txt
 
-Crear o configurar el archivo ".env" dentro de "techgear_api":
+Crea el archivo ".env" dentro de "techgear_api/":
 
-MONGO_URI=TU_URI_DE_MONGODB_ATLAS
+MONGO_URI=TU_URI_DE_MONGODB
 SECRET_KEY=TU_CLAVE_SECRETA
-ADMIN_EMAILS=tu_correo@ejemplo.com
+ADMIN_EMAILS=correo_admin@ejemplo.com
 PUBLIC_API_URL=http://127.0.0.1:8000
+CORS_ORIGINS=http://127.0.0.1:8001
 
-Iniciar FastAPI:
+Inicia el servidor:
 
-py -m uvicorn main:app --reload --host 127.0.0.1 --port 8000
+uvicorn main:app --reload
 
-Documentación local:
+La API estará disponible en:
 
-http://127.0.0.1:8000/docs
+- API: http://127.0.0.1:8000
+- Documentación Swagger: http://127.0.0.1:8000/docs
+- Documentación ReDoc: http://127.0.0.1:8000/redoc
 
-3. Configurar Django
+Paso 3. Ejecutar Django
 
-Abrir una segunda terminal y regresar a la carpeta principal del proyecto.
+Abre una segunda terminal y entra en la carpeta principal de Django:
 
-Crear entorno virtual:
+cd techgear_web
 
-py -m venv venv
+Crea un entorno virtual:
 
-Activar el entorno:
+python -m venv venv
+
+Actívalo:
 
 .\venv\Scripts\Activate.ps1
 
-Instalar dependencias:
+Instala las dependencias:
 
-py -m pip install -r techgear_web/requirements.txt
+pip install -r requirements.txt
 
-Crear o configurar el archivo ".env" dentro de "techgear_web":
+Crea el archivo ".env" dentro de "techgear_web/":
 
 API_URL=http://127.0.0.1:8000
-DJANGO_SECRET_KEY=TU_CLAVE_SECRETA
+DJANGO_SECRET_KEY=TU_CLAVE_SECRETA_DJANGO
 DJANGO_DEBUG=True
 DJANGO_ALLOWED_HOSTS=127.0.0.1,localhost
+DJANGO_SECURE_COOKIES=False
 
-Ejecutar las migraciones:
+Ejecuta las migraciones:
 
-py manage.py migrate
+python manage.py migrate
 
-Iniciar Django:
+Inicia Django:
 
-py manage.py runserver 127.0.0.1:8001
+python manage.py runserver 8001
 
-Abrir en el navegador:
+Abre la aplicación en el navegador:
 
 http://127.0.0.1:8001
 
-Importante: FastAPI debe permanecer ejecutándose en la primera terminal mientras se utiliza Django.
+«Importante: debes mantener los dos servidores activos. FastAPI procesa las solicitudes del backend y Django muestra la aplicación web.»
 
----
+7. Variables de entorno
 
-☁️ Configuración del despliegue
+Las variables de entorno permiten configurar las conexiones y proteger información privada.
 
-FastAPI – Render
-
-Dirección pública:
-
-https://techgear-yxm3.onrender.com
-
-En Render, dentro de Environment Variables, se configuran las siguientes variables:
+FastAPI
 
 Variable| Descripción
-"MONGO_URI"| Conexión a MongoDB Atlas
-"SECRET_KEY"| Clave privada para autenticación
-"ADMIN_EMAILS"| Correos autorizados como administradores
-"PUBLIC_API_URL"| URL pública de FastAPI para las imágenes
+"MONGO_URI"| Dirección de conexión a MongoDB Atlas.
+"SECRET_KEY"| Clave para firmar los tokens JWT.
+"ADMIN_EMAILS"| Correos autorizados para el rol administrador.
+"PUBLIC_API_URL"| Dirección pública de la API.
+"CORS_ORIGINS"| Direcciones autorizadas para consumir la API.
 
-"PUBLIC_API_URL" debe contener:
-
-https://techgear-yxm3.onrender.com
-
-Django – Vercel
-
-Dirección pública:
-
-https://tech-gear-kappa.vercel.app/
-
-En las variables de entorno de Vercel se configura:
+Django
 
 Variable| Descripción
-"API_URL"| Dirección pública de FastAPI
-"DJANGO_SECRET_KEY"| Clave privada de Django
-"DJANGO_ALLOWED_HOSTS"| Dominios autorizados
-"DJANGO_DEBUG"| Modo de depuración
+"API_URL"| Dirección de la API FastAPI.
+"DJANGO_SECRET_KEY"| Clave secreta de Django.
+"DJANGO_DEBUG"| Activa o desactiva el modo de depuración.
+"DJANGO_ALLOWED_HOSTS"| Dominios permitidos para acceder a Django.
+"DJANGO_SECURE_COOKIES"| Configura el uso de cookies seguras.
 
-La variable "API_URL" debe contener:
+Nota de seguridad: los archivos ".env" contienen información privada. No deben subirse a GitHub ni compartirse públicamente.
 
-https://techgear-yxm3.onrender.com
+8. Despliegue del proyecto
 
-Para producción se recomienda:
+TechGear se encuentra publicado utilizando dos plataformas:
 
-DJANGO_DEBUG=False
+Servicio| Plataforma| Dirección
+Aplicación web| Vercel| "tech-gear-kappa.vercel.app" (https://tech-gear-kappa.vercel.app/)
+API REST| Render| "techgear-yxm3.onrender.com" (https://techgear-yxm3.onrender.com)
+Documentación API| Render| "Swagger UI" (https://techgear-yxm3.onrender.com/docs)
+Base de datos| MongoDB Atlas| "MongoDB" (https://www.mongodb.com/atlas)
 
-Nota: Las variables privadas se configuran directamente en los paneles de Render y Vercel. Los archivos ".env" no deben subirse a GitHub.
+Configuración de producción
 
----
+- En Render se configuran las variables de entorno de FastAPI.
+- En Vercel se configuran las variables de entorno de Django.
+- La variable "API_URL" de Django debe apuntar a la dirección pública de FastAPI.
+- MongoDB Atlas almacena los datos principales de la aplicación.
 
-🛍️ Funcionalidades principales
+9. Endpoints principales de la API
 
-Catálogo de productos
+La API cuenta con diferentes rutas para gestionar la información del sistema.
 
-- Visualización de productos tecnológicos.
-- Consulta de información y precios.
-- Consulta de disponibilidad y existencias.
-- Visualización de imágenes.
+Método| Ruta| Función
+POST| "/auth/login"| Iniciar sesión.
+POST| "/users"| Registrar usuarios.
+GET| "/users/me"| Consultar el perfil.
+GET| "/users"| Consultar usuarios.
+POST| "/products"| Crear productos.
+GET| "/products"| Consultar productos.
+GET| "/products/{id}"| Consultar un producto.
+PUT| "/products/{id}"| Actualizar productos.
+DELETE| "/products/{id}"| Eliminar productos.
+POST| "/orders"| Registrar pedidos.
+GET| "/orders"| Consultar pedidos.
+POST| "/images"| Cargar imágenes.
+GET| "/images/{image_id}"| Consultar imágenes.
 
-Gestión de usuarios
+Para conocer los parámetros, respuestas y requisitos de autenticación de cada endpoint, consulta la documentación:
 
-- Registro de usuarios.
-- Inicio y cierre de sesión.
-- Autenticación mediante JWT.
-- Roles de administrador y cliente.
+"Ver documentación interactiva de TechGear API" (https://techgear-yxm3.onrender.com/docs)
 
-Administración
+10. Información del proyecto
 
-- Crear productos.
-- Editar productos.
-- Eliminar productos.
-- Consultar inventario.
-- Consultar estadísticas y pedidos.
-
-Carrito de compras
-
-- Agregar productos al carrito.
-- Modificar cantidades.
-- Eliminar productos.
-- Calcular subtotales y total.
-- Persistencia mediante "localStorage".
-
-Pedidos
-
-- Registro de pedidos.
-- Validación de precios desde la API.
-- Descuento de existencias.
-- Historial de pedidos.
-- Informe imprimible de compra.
-
-Importante: El sistema registra pedidos y actualiza inventario, pero no tiene integrada una pasarela de pagos ni realiza cobros reales.
-
-Imágenes
-
-- Carga de imágenes JPG, PNG y WebP.
-- Tamaño máximo de 5 MB.
-- Almacenamiento de imágenes en MongoDB.
-- Posibilidad de utilizar enlaces públicos de imágenes.
+Dato| Información
+Nombre| TechGear
+Tipo| Aplicación web con API REST
+Backend| Python, FastAPI y Django
+Base de datos principal| MongoDB Atlas
+Repositorio| "GitHub - TechGear" (https://github.com/joseismael25/TechGear)
+Despliegue web| Vercel
+Despliegue API| Render
 
 ---
 
-🔐 Seguridad
+<div align="center">TECHGEAR
 
-- Las contraseñas de los usuarios se almacenan mediante hash.
-- Se utiliza autenticación JWT.
-- Los permisos administrativos son controlados desde la API.
-- Las claves privadas se gestionan mediante variables de entorno.
-- Los archivos ".env" están excluidos del repositorio mediante ".gitignore".
+Tecnología, innovación y desarrollo web.
 
-Nunca publiques contraseñas, tokens, URI de MongoDB ni claves privadas.
+Desarrollado como proyecto de software.
 
----
+"Visitar aplicación" (https://tech-gear-kappa.vercel.app/) · "Ver código fuente" (https://github.com/joseismael25/TechGear)
 
----
-
-👨‍💻 Autor
-
-Proyecto: TechGear
-
-Tecnologías principales: Python, FastAPI, Django, JavaScript y MongoDB Atlas.
-
-Repositorio: https://github.com/joseismael25/TechGear
-
-Despliegue: Render y Vercel.
-
----
-
-📌 Observaciones finales
-
-TechGear es un proyecto de gestión de productos tecnológicos que integra servicios independientes mediante una API REST.
-
-Su arquitectura permite separar la lógica del backend, la interfaz web y el almacenamiento de datos, facilitando el mantenimiento y la evolución del sistema.
+</div>
